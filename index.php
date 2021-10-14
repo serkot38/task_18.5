@@ -4,34 +4,31 @@
     $errors=[];
     $messages=[];
 
-    $files=scandir(UPLOAD_DIR);
-    $files=array_filter($files, function($file) {
-        return !in_array($file, ['.','..', '.gitkeep']);
-    });
-
-    if(!empty($_FILES)) {
-        for($i=0; $i<count($_FILES['files']['name']); $i++) {
-            $fileName=$_FILES['files']['name'][$i];
-
-            if($_FILES['files']['size'][$i]>UPLOAD_MAX_SIZE) {
-                $errors[]='Недопустимый размер файла '.$fileName;
+    if (!empty($_FILES)) {
+        for($i = 0; $i<count($_FILES['files']['name']); $i++) {
+            $fileName = $_FILES['files']['name'][$i];
+    
+            if ($_FILES['files']['size'][$i]>UPLOAD_MAX_SIZE) {
+                $errors[]='Недопостимый размер файла '.$fileName;
                 continue;
             }
-
-            if(!in_array($_FILES['files']['type'][$i], ALLOWED_TYPES)) {
+    
+            if (!in_array($_FILES['files']['type'][$i], ALLOWED_TYPES)) {
                 $errors[]='Недопустимый формат файла '.$fileName;
                 continue;
             }
-
-            $filePath=UPLOAD_DIR.'/'.basename($fileName);
-            if(!move_uploaded_file($_FILES['files']['tmp_name'][$i], $filePath)) {
+    
+            $filePath = UPLOAD_DIR.'/'.basename($fileName);
+            if (!move_uploaded_file($_FILES['files']['tmp_name'][$i], $filePath)) {
                 $errors[]='Ошибка загрузки файла '.$fileName;
                 continue;
             }
         }
-        if(empty($errors)) {
-            $messages[]='Файлы уже загружены';
+    
+        if (empty($errors)) {
+            $messages[]='Файлы были загружены';
         }
+    
     }
 
     if(!empty($_POST['name'])) {
@@ -45,32 +42,31 @@
         }
         $messages[]='Файл был удален';
     }
+
+    $files=scandir(UPLOAD_DIR);
+    $files=array_filter($files, function($file) {
+        return !in_array($file,['.', '..','.gitkeep']);
+    });
 ?>
 
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <title>Галерея изображений</title>
     </head>
     <body>
         <div class="container">
-            <?php if(!empty($errors)): ?>
-                <div class="alert alert-danger">
-                    <ul>
-                        <?php foreach($errors as $error): ?>
-                            <li><?php echo $error; ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-            <?php if(!empty($_FILES) && empty($errors)): ?>
-                <div class="alert alert-success">Файлы успешно загружены</div>
-            <?php endif; ?>
-                <form action="<?php echo URL; ?>" method="post" enctype="multipart/form-data">
+            <?php foreach($errors as $error): ?>
+                <div class="alert alert-danger"><?php echo $error; ?></div>
+            <?php endforeach; ?>
+            <?php foreach($messages as $message): ?>
+                <div class="alert alert-success"><?php echo $message; ?></div>
+            <?php endforeach; ?>
+                <form method="post" enctype="multipart/form-data">
                     <div class="custom-file">
                         <div class="row">
                             <div class="col-4">
@@ -100,8 +96,8 @@
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </form>
-                                    <a href="<?php echo URL.'/file.php?name='.$file; ?>" title="Просмотр полного изображения">
-                                        <img src="<?php echo URL.'/'.UPLOAD_DIR.'/'.$file ?>" class="img-thumbnail" alt="<?php echo $file; ?>">
+                                    <a href="<?php echo URL.'file.php?name='.$file; ?>" title="Просмотр полного изображения">
+                                        <img src="<?php echo UPLOAD_DIR.'/'.$file ?>" class="img-thumbnail" alt="<?php echo $file; ?>">
                                     </a>
                                 </div>
                             <?php endforeach; ?>

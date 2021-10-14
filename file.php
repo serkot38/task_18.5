@@ -16,7 +16,7 @@
 
         if(empty($errors)) {
             $comment=strip_tags($comment);
-            $comment=str_replace(array(["\r\n","\r","\n","\\r","\\n","\\r\\n"]),"<br/>", $comment);
+            $comment=str_replace(array("\r\n","\r","\n","\\r","\\n","\\r\\n"),"<br/>", $comment);
             $comment=date('d.m.y H:i').': '.$comment;
 
             file_put_contents($commentFilePath, $comment."\n", FILE_APPEND);
@@ -39,17 +39,17 @@
     </head>
     <body>
         <div class="container">
-            <h1 class="fs-2 text-primary text-opacity-75 text-center">Галерея изображений</h1>
+            <h1 class="fs-2 text-primary text-opacity-75 text-center"><a href="<?php echo URL; ?>">Галерея изображений</a></h1>
             <?php foreach($errors as $error): ?>
                 <div class="alert alert-danger"><?php echo $error; ?></div>
             <?php endforeach; ?>
             <?php foreach($messages as $message): ?>
                 <div class="alert alert-success"><?php echo $message; ?></div>
             <?php endforeach; ?>
-            <h2 class="mb-4"><?php echo $imageFileName; ?></h2>
+            <h2 class="mb-4 text-center"><?php echo $imageFileName; ?></h2>
             <div class="row">
                 <div class="col-12 col-sm-8 offset-sm-2">
-                    <img src="<?php echo URL.'/'.UPLOAD_DIR.'/'.$imageFileName ?>" class="img-thumbnail mb-4" alt="<?php echo $imageFileName ?>">
+                    <img src="<?php echo UPLOAD_DIR.'/'.$imageFileName ?>" class="img-thumbnail mb-4" alt="<?php echo $imageFileName ?>">
                     <h3>Комментарии</h3>
                     <?php if(!empty($comments)): ?>
                         <?php foreach($comments as $key => $comment): ?>
